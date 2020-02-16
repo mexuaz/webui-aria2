@@ -7,9 +7,13 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 
-# Install aria2
-sudo apt update
-sudo apt install aria2 -y
+# Install aria2 if not installed
+if [ $(dpkg-query -W -f='${Status}' aria2 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+	sudo apt update
+	sudo apt install aria2 -y
+fi
+
 
 
 
@@ -36,10 +40,10 @@ Type=Application
 Terminal=false
 Categories=Network
 ENDOFFILE
-echo "Exec=xdg-open $DIR/../docs/index.html" >> $DSKFILE
+echo "Exec=sh -c \"aria2c --enable-rpc --rpc-listen-all; xdg-open $DIR/../docs/index.html\"" >> $DSKFILE
 echo "Icon=$DIR/Network-Download-icon.png" >> $DSKFILE
 
-sudo chmod +x $DSKFILE
+chmod +x $DSKFILE
 
 
 
